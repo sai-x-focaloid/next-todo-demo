@@ -1,0 +1,21 @@
+{
+  "name": "next-todo-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "axios": "^0.21.0",
+    "bootstrap": "^4.5.3",
+    "jquery": "^3.5.1",
+    "next": "10.0.1",
+    "nprogress": "^0.2.0",
+    "popper.js": "^1.16.1",
+    "react": "17.0.1",
+    "react-bootstrap": "^1.4.0",
+    "react-dom": "17.0.1"
+  }
+}
