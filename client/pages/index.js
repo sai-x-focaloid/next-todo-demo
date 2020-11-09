@@ -1,0 +1,195 @@
+import React, { useState } from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Navbar, InputGroup, Form, FormControl, ListGroup, Button, Container, Col, Row, Card, Toast } from 'react-bootstrap'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
+function Home( {data} ) {
+
+  const [items, setItems] = useState(data)
+  const [newitem, setNewitem] = useState({complete:false, todotext:""})
+  const [toast, setToast] = useState({text:"",show:false})
+
+  const baseUrl = "http://localhost:9000/api";
+
+  // API Calls
+
+  const getTodos = async () => {
+      let url = baseUrl + "/"
+      try{
+        await fetch(url)
+                        .then( _ => {
+                          console.log(_.status);
+                          return _.json()
+                        }).then(result=>{
+                          console.log(result)
+                          setItems(result);
+                        })
+                        .catch( _ => {
+                          setToast({text:"data get error",show:true})
+                          console.log("error",_);
+                        })
+        
+      }
+      catch (e){
+        console.log("Error : ",e);
+      }
+  }
+
+  const changeNewitemName = (e) => setNewitem(
+    (_newItem)=>{
+      _newItem.todotext = e.target.value; 
+      return {..._newItem}
+    }
+  )
+
+  const changeNewitemComplete = (e) => setNewitem(
+    (_newItem) => {
+      _newItem.complete = e.target.checked;
+      console.log(_newItem);
+      return {..._newItem}
+    }
+  )
+
+  const changeItemComplete = (e, item) => {
+    NProgress.start()
+    let url = baseUrl + "/" + item._id;
+    item.complete = !item.complete
+    fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(item)
+    })
+    .then( _ => getTodos())
+    .catch( _ => setToast({text:"todo update error",show:true}))
+    NProgress.done()
+  }
+
+  const addItem = () => {
+    NProgress.start()
+    let data = {
+      todotext : newitem.todotext,
+      complete : newitem.complete,
+    }
+    console.log(data);
+    let url = baseUrl + "/"
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then( _ => {
+      console.log(_.status);
+      return _.json()
+    }).then(result=>{
+      console.log("result",result)
+      getTodos();
+      setNewitem({complete:false, todotext:""})
+    })
+    .catch( _ => {
+      setToast({text:"todo add error",show:true})
+      console.log("error",_);
+    })
+    NProgress.done()
+  }
+
+  const deleteItem = (id) => {
+    NProgress.start()
+    let url = baseUrl + "/" + id;
+    fetch(url,{
+      method: "DELETE",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then( _ => {
+      getTodos();
+    })
+    .catch( () => {
+      setToast({text:"todo delete error", show:true});
+    })
+    NProgress.done()
+  }
+
+  return (
+    <>
+    <Navbar bg="light" variant="light">
+      <Navbar.Brand href="#home">Next Based Todo App</Navbar.Brand>
+    </Navbar>
+    <Container>
+       <Row  style={{marginTop:40 + 'px'}} >
+         <Col xs="10">
+          <Row>
+            <h3 style={{paddingLeft:30+'px'}} >Add Todo</h3>
+          </Row>
+          <Row className="justify-content-xs-center" >
+              <Col xs="10" >
+                <InputGroup className="mb-3">
+                  <InputGroup.Prepend>
+                    <InputGroup.Checkbox onChange={changeNewitemComplete} checked={newitem.complete} />
+                  </InputGroup.Prepend>
+                  <FormControl onChange={changeNewitemName} placeholder="Add a new todo" value={newitem.todotext} />
+                </InputGroup>
+              </Col>
+              <Col xs="2" >
+                  <Button onClick={addItem} variant="outline-primary">Add Todo</Button>{' '}
+              </Col>
+          </Row>
+         </Col>
+         <Col xs="2" >
+            <Toast onClose={() => setToast({text:"",show:false})} show={toast.show} delay={1000} autohide>
+            <Toast.Header>
+              <strong className="mr-auto">Error</strong>
+            </Toast.Header>
+              <Toast.Body>{toast.text}</Toast.Body>
+            </Toast>
+         </Col>    
+       </Row>
+       <Row>
+         { 
+          items.map( 
+            item => ( 
+                <Col>
+                  <Card border={ item.complete == true ? "success" : "primary" } style={{ width: '18rem', marginTop: 20+"px" }}>
+                    <Card.Header>{item._id}</Card.Header>
+                    <Card.Body>
+                      <Card.Title>{item.todotext}</Card.Title>
+                      <ListGroup variant="flush">
+                          <ListGroup.Item> Completed ? <Form.Check onChange={(e)=>changeItemComplete(e,item)} checked={item.complete} type="checkbox" id={item._id} /></ListGroup.Item>
+                          <ListGroup.Item><Button variant="outline-danger" size="sm" onClick={() => deleteItem(item._id)} >Delete</Button></ListGroup.Item>
+                      </ListGroup>
+                      
+                    </Card.Body>
+                  </Card>
+                </Col> 
+                )
+              )
+          }
+       </Row>
+    </Container>
+    </>
+  )
+}
+
+Home.getInitialProps = async (ctx) => {
+  try{
+    var res = await fetch("http://localhost:9000/api")
+  }
+  catch {
+    console.log("initial load error");
+    return {data: []}
+  }
+  const data = await res.json()
+  return { data: data }
+  
+}
+
+
+export default Home
