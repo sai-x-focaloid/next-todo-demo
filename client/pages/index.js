@@ -6,14 +6,18 @@ import 'nprogress/nprogress.css'
 
 function Home( {data} ) {
 
+  // all todos
   const [items, setItems] = useState(data)
+  // new todo
   const [newitem, setNewitem] = useState({complete:false, todotext:""})
+  // data to be shown on toast
   const [toast, setToast] = useState({text:"",show:false})
-
+  
   const baseUrl = "http://localhost:9000/api";
 
   // API Calls
 
+  // get all todos
   const getTodos = async () => {
       let url = baseUrl + "/"
       try{
@@ -36,6 +40,7 @@ function Home( {data} ) {
       }
   }
 
+  // change todo name in newtodo
   const changeNewitemName = (e) => setNewitem(
     (_newItem)=>{
       _newItem.todotext = e.target.value; 
@@ -43,6 +48,7 @@ function Home( {data} ) {
     }
   )
 
+  // change complete state in newtodo
   const changeNewitemComplete = (e) => setNewitem(
     (_newItem) => {
       _newItem.complete = e.target.checked;
@@ -51,6 +57,7 @@ function Home( {data} ) {
     }
   )
 
+  // change the value complete of a todo
   const changeItemComplete = (e, item) => {
     NProgress.start()
     let url = baseUrl + "/" + item._id;
@@ -68,6 +75,7 @@ function Home( {data} ) {
     NProgress.done()
   }
 
+  // create a new todo
   const addItem = () => {
     NProgress.start()
     let data = {
@@ -99,6 +107,7 @@ function Home( {data} ) {
     NProgress.done()
   }
 
+  // delete a todo
   const deleteItem = (id) => {
     NProgress.start()
     let url = baseUrl + "/" + id;
@@ -156,7 +165,7 @@ function Home( {data} ) {
          { 
           items.map( 
             item => ( 
-                <Col>
+                <Col key={item._id} >
                   <Card border={ item.complete == true ? "success" : "primary" } style={{ width: '18rem', marginTop: 20+"px" }}>
                     <Card.Header>{item._id}</Card.Header>
                     <Card.Body>
