@@ -1,0 +1,32 @@
+version: '3'
+services:
+  node_server:
+    image: nipunshaji190/node_server:test
+    build: ./server
+    environment:
+      - DB_URL=mongodb://mongo:27017/tododb
+    ports:
+      - '9000:9000'
+  next_client:
+    #image: nipunshaji190/next_client:test
+    image: nipunshaji190/next_client.slim:latest
+    build: ./client
+    depends_on:
+      - node_server
+    ports:
+      - '3000:3000'
+  reverse-proxy:
+    image: nipunshaji190/reverse_proxy:latest
+    build: ./reverse_proxy
+    container_name: reverse_proxy
+    depends_on:
+      - next_client
+      - node_server
+    ports:
+      - 80:80
+  mongo:
+    image: mongo
+    volumes:
+      - ./tmp/data:/data/db
+    ports:
+      - '27017:27017'
