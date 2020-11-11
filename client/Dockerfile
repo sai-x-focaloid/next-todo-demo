@@ -10,5 +10,5 @@ RUN npm run build
 
 EXPOSE 3000
 
-CMD [ "next", "start" ]
+CMD [ "./node_modules/.bin/next", "start" ]
 

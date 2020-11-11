@@ -8,8 +8,8 @@ services:
     ports:
       - '9000:9000'
   next_client:
-    #image: nipunshaji190/next_client:test
-    image: nipunshaji190/next_client.slim:latest
+    image: nipunshaji190/next_client:test
+    # image: nipunshaji190/next_client.slim:latest
     build: ./client
     depends_on:
       - node_server

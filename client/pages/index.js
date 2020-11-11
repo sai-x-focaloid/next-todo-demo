@@ -191,7 +191,8 @@ Home.getInitialProps = async (ctx) => {
   try{
     var res = await fetch("http://localhost:9000/api")
   }
-  catch {
+  catch(err) {
+    console.log("error -----------------------------------  ",err);
     console.log("initial load error");
     return {data: []}
   }
