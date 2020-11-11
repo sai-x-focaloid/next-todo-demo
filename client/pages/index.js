@@ -189,10 +189,11 @@ function Home( {data} ) {
 
 Home.getInitialProps = async (ctx) => {
   try{
-    var res = await fetch("http://localhost:9000/api")
+    var res = await fetch("http://localhost:9000/api/")
   }
-  catch {
+  catch(err) {
     console.log("initial load error");
+    console.log("error ----------------------------",err);
     return {data: []}
   }
   const data = await res.json()
