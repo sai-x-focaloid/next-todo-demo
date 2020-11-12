@@ -4,20 +4,23 @@ import { Navbar, InputGroup, Form, FormControl, ListGroup, Button, Container, Co
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
-function Home( {data} ) {
+function Home( ) {
 
   // all todos
-  const [items, setItems] = useState(data)
+  const [items, setItems] = useState([])
   // new todo
   const [newitem, setNewitem] = useState({complete:false, todotext:""})
   // data to be shown on toast
   const [toast, setToast] = useState({text:"",show:false})
+
+  const [firstTime, setFirstTIme] = useState(true)
   
   const baseUrl = "http://localhost:9000/api";
 
   // API Calls
 
   // get all todos
+
   const getTodos = async () => {
       let url = baseUrl + "/"
       try{
@@ -82,6 +85,7 @@ function Home( {data} ) {
       todotext : newitem.todotext,
       complete : newitem.complete,
     }
+    setNewitem({complete:false, todotext:""})
     console.log(data);
     let url = baseUrl + "/"
     fetch(url, {
@@ -98,7 +102,6 @@ function Home( {data} ) {
     }).then(result=>{
       console.log("result",result)
       getTodos();
-      setNewitem({complete:false, todotext:""})
     })
     .catch( _ => {
       setToast({text:"todo add error",show:true})
@@ -127,6 +130,11 @@ function Home( {data} ) {
     NProgress.done()
   }
 
+  if(firstTime){
+    getTodos()
+    setFirstTIme(false) 
+  }
+
   return (
     <>
     <Navbar bg="light" variant="light">
@@ -144,11 +152,11 @@ function Home( {data} ) {
                   <InputGroup.Prepend>
                     <InputGroup.Checkbox onChange={changeNewitemComplete} checked={newitem.complete} />
                   </InputGroup.Prepend>
-                  <FormControl onChange={changeNewitemName} placeholder="Add a new todo" value={newitem.todotext} />
+                  <FormControl onChange={changeNewitemName} placeholder="Add a new todo" id="addtodo" value={newitem.todotext} />
                 </InputGroup>
               </Col>
               <Col xs="2" >
-                  <Button onClick={addItem} variant="outline-primary">Add Todo</Button>{' '}
+                  <Button onClick={addItem} id="addtodobutton" variant="outline-primary">Add Todo</Button>{' '}
               </Col>
           </Row>
          </Col>
@@ -161,11 +169,11 @@ function Home( {data} ) {
             </Toast>
          </Col>    
        </Row>
-       <Row>
+       <Row id="items" >
          { 
           items.map( 
             item => ( 
-                <Col key={item._id} >
+                <Col key={item._id}  >
                   <Card border={ item.complete == true ? "success" : "primary" } style={{ width: '18rem', marginTop: 20+"px" }}>
                     <Card.Header>{item._id}</Card.Header>
                     <Card.Body>
@@ -187,19 +195,20 @@ function Home( {data} ) {
   )
 }
 
-Home.getInitialProps = async (ctx) => {
-  try{
-    var res = await fetch("http://localhost:9000/api/")
-  }
-  catch(err) {
-    console.log("initial load error");
-    console.log("error ----------------------------",err);
-    return {data: []}
-  }
-  const data = await res.json()
-  return { data: data }
+// Home.getInitialProps = async (ctx) => {
+//   try{
+//     var res = await fetch("http://localhost:9000/api/")
+//   }
+//   catch(err) {
+//     console.log("error -----------------------------------  ",err);
+//     console.log("initial load error");
+//     return {data: []}
+//   }
+//   const data = await res.json()
+//   console.log("data ---------------------- /n",data);
+//   return { data: data }
   
-}
+// }
 
 
 export default Home
