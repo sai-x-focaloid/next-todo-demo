@@ -16,7 +16,7 @@ services:
     ports:
       - '3000:3000'
   reverse-proxy:
-    image: nipunshaji190/reverse_proxy:latest
+    image: nipunshaji190/reverse_proxy:test
     build: ./reverse_proxy
     container_name: reverse_proxy
     depends_on:
@@ -30,3 +30,14 @@ services:
       - ./tmp/data:/data/db
     ports:
       - '27017:27017'
+  cypress:
+    image: cypress-test
+    network_mode: host
+    volumes: 
+      - ./client/cypress/:/cypress
+      - ./client/cypress.json:/cypress.json
+    depends_on:
+      - next_client
+      - node_server
+      - reverse-proxy
+      - mongo
