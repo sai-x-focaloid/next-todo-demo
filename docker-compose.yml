@@ -4,7 +4,7 @@ services:
     image: nipunshaji190/node_server:test
     build: ./server
     environment:
-      - DB_URL=mongodb://mongo:27017/tododb
+      - DB_URL=mongodb+srv://root:toor@cluster0.51apq.mongodb.net/tododb?retryWrites=true&w=majority
     ports:
       - '9000:9000'
   next_client:
@@ -24,20 +24,11 @@ services:
       - node_server
     ports:
       - 80:80
-  mongo:
-    image: mongo
-    volumes:
-      - ./tmp/data:/data/db
-    ports:
-      - '27017:27017'
   cypress:
-    image: cypress-test
+    image: nipunshaji190/cypress-test:test
+    build: ./cypress-test
     network_mode: host
-    volumes: 
-      - ./client/cypress/:/cypress
-      - ./client/cypress.json:/cypress.json
     depends_on:
       - next_client
       - node_server
       - reverse-proxy
-      - mongo
