@@ -15,7 +15,11 @@ function Home( ) {
 
   const [firstTime, setFirstTIme] = useState(true)
   
-  const baseUrl = "http://localhost:9000/api";
+  const baseUrl = (process.browser)
+                    ? (location.origin.split(":")[1] === "//localhost") 
+                      ? 'http://localhost:9000/api' 
+                      : location.origin.split(":")[0]+":"+location.origin.split(":")[1]+"/api" 
+                    : 'http://localhost:9000/api';
 
   // API Calls
 
