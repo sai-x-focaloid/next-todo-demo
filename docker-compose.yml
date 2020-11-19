@@ -7,6 +7,8 @@ services:
       - DB_URL=mongodb+srv://root:toor@cluster0.51apq.mongodb.net/tododb?retryWrites=true&w=majority
     ports:
       - '9000:9000'
+    # logging:
+    #   driver: awslogs 
   next_client:
     image: nipunshaji190/next_client:test
     # image: nipunshaji190/next_client.slim:latest
@@ -15,8 +17,10 @@ services:
       - node_server
     ports:
       - '3000:3000'
+    # logging:
+    #   driver: awslogs  
   reverse-proxy:
-    image: nipunshaji190/reverse_proxy:test
+    image: nipunshaji190/reverse_proxy:latest
     build: ./reverse_proxy
     container_name: reverse_proxy
     depends_on:

@@ -1,0 +1,29 @@
+########
+version: 2.1
+
+orbs:
+  slim: slimai-dev/slim@dev:cypress-container
+  
+workflows:
+  compose-slim:
+    jobs:
+      - slim/compose-slim:
+          dockerhub-username: $DOCKER_USERNAME
+          dockerhub-password: $DOCKER_PASSWORD
+          slim-ai-username: $SLIM_USERNAME
+          slim-ai-token: $SLIM_TOKEN
+          slim-ai-org-id: $SLIM_ORG_ID
+          images: nipunshaji190/vue_client:test,nipunshaji190/node_server:test
+          docker-compose-path: ./todo-mevn/docker-compose.yml
+          integration-tests-path: ./todo-mevn/client/cypress/integration/completeFourSteps.js
+          aws-subnet1: $SLIM_SUBNET1
+          aws-subnet2: $SLIM_SUBNET2
+          aws-sg: $SLIM_SG
+          aws-access-key-id: $AWS_ACCESS_KEY_ID
+          aws-secret-access-key: $AWS_SECRET_ACCESS_KEY
+          ecs-profile: $ECS_PROFILE
+          aws-cluster: $SLIM_CLUSTER
+          aws-config-name: $SLIM_CONFIG_NAME
+          aws-region: $AWS_REGION
+          aws-project-name: $SLIM_PROJECT_NAME
+          aws-cluster-config: $SLIM_CLUSTER_CONFIG
