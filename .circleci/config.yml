@@ -13,9 +13,8 @@ workflows:
           slim-ai-username: $SLIM_USERNAME
           slim-ai-token: $SLIM_TOKEN
           slim-ai-org-id: $SLIM_ORG_ID
-          images: nipunshaji190/vue_client:test,nipunshaji190/node_server:test
-          docker-compose-path: ./todo-mevn/docker-compose.yml
-          integration-tests-path: ./todo-mevn/client/cypress/integration/completeFourSteps.js
+          images: nipunshaji190/next_client:test
+          docker-compose-path: ./docker-compose.yml
           aws-subnet1: $SLIM_SUBNET1
           aws-subnet2: $SLIM_SUBNET2
           aws-sg: $SLIM_SG
