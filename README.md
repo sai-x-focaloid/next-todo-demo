@@ -32,7 +32,7 @@ Image size before and after slimming
     - Slim Image Size : 73.5 MB
     - Minified by : 12.6X
       
-* Vue Client
+* Next Client
 
 	- Fat Image Size : 1.74 GB
 	- Slim Image Size : 192 MB
