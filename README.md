@@ -24,7 +24,7 @@ Then run the test:
 
   Running the dockerised app automatically runs the cypress tests as cypress test is added as a service
 
-Image size before and after slimming
+**Image size before and after slimming**
 
 * Node Server
 
